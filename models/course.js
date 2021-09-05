@@ -27,5 +27,12 @@ module.exports = (sequelize) => {
       },
     }, { sequelize });
 
+    // Define Model Associations
+    // In the Courses model, add a one-to-one association between the Course and User models using the belongsTo() method.
+    Course.associate = (models) => {
+      // Add Associations
+      Course.belongsTo(models.User);
+    }
+
     return Course;
 };
