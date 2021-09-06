@@ -20,11 +20,7 @@ module.exports = (sequelize) => {
             type: DataTypes.STRING,
         },
         password: {
-            type: DataTypes.VIRTUAL,
-        },
-        confirmedPassword: {
             type: DataTypes.STRING,
-            allowNull: false,
         }
     }, { sequelize });
 

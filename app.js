@@ -4,6 +4,13 @@
 const express = require('express');
 const morgan = require('morgan');
 const { User, Course, sequelize } = require('./models');
+const user = require('./models/user');
+// const Sequelize = require('sequelize');
+// const sequelize = new Sequelize({
+//   dialect: 'sqlite',
+//   storage: 'movies.db'
+// })
+// const { Course } = sequelize;
 
 // variable to enable global error logging
 const enableGlobalErrorLogging = process.env.ENABLE_GLOBAL_ERROR_LOGGING === 'true';
@@ -25,7 +32,6 @@ app.get('/', (req, res) => {
 app.get('/api/users', (async (req, res) => {
   try {
     let users = await User.findAll();
-    console.log(users);
     res.status(200).json(users);
   } catch (error) {
     res.status(500).json({ "message": error });
@@ -94,6 +100,11 @@ app.set('port', process.env.PORT || 5000);
     console.log('Connection has been established successfully.');
     await sequelize.sync();
     console.log('Synchronizing the models with the database...');
+    // let courses = await Course.findAll();
+    // console.log(courses);
+    // let users = await User.findAll();
+    // console.log(users);
+
   } catch (error) {
     console.error('Unable to connect to the database:', error);
   }
