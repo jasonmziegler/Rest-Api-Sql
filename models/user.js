@@ -26,10 +26,10 @@ module.exports = (sequelize) => {
 
     // Define Model Associations
     // In the Users model, add a one-to-many association between the User and Course models using the hasMany() method.
-    // User.associate = (models) => {
-    //     // Add Associations
-    //     User.hasMany(models.Course);
-    // }
+    User.associate = (models) => {
+        // Add Associations
+        User.hasMany(models.Course);
+    }
 
 
     return User;
