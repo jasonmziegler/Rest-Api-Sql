@@ -17,22 +17,23 @@ module.exports = (sequelize) => {
       },
       materialsNeeded: {
         type: DataTypes.STRING
-      },
-      userId: { 
-        type: DataTypes.INTEGER,
-        references: {
-          model: User,
-          key: 'id',
-        }
-      },
+      }
+      // ,
+      // userId: { 
+      //   type: DataTypes.INTEGER,
+      //   references: {
+      //     model: User,
+      //     key: 'id',
+      //   }
+      // },
     }, { sequelize });
 
     // Define Model Associations
     // In the Courses model, add a one-to-one association between the Course and User models using the belongsTo() method.
-    Course.associate = (models) => {
-      // Add Associations
-      Course.belongsTo(models.User);
-    }
+    // Course.associate = (models) => {
+    //   // Add Associations
+    //   Course.belongsTo(models.User);
+    // }
 
     return Course;
 };

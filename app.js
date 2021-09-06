@@ -3,7 +3,7 @@
 // load modules
 const express = require('express');
 const morgan = require('morgan');
-const { sequelize } = require('./models');
+const { User, Course, sequelize } = require('./models');
 
 // variable to enable global error logging
 const enableGlobalErrorLogging = process.env.ENABLE_GLOBAL_ERROR_LOGGING === 'true';
@@ -23,7 +23,14 @@ app.get('/', (req, res) => {
 
 // A /api/users GET route that will return all properties and values for the currently authenticated User along with a 200 HTTP status code.
 app.get('/api/users', (async (req, res) => {
-  res.status(200).json({ "message": "This GET route should return user information for the currently authenticated User" });
+  try {
+    let users = await User.findAll();
+    console.log(users);
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ "message": error });
+  }
+  
 }));
 
 // A /api/users POST route that will create a new user, set the Location header to "/", and return a 201 HTTP status code and no content.
@@ -33,7 +40,13 @@ app.post('/api/users', (async (req, res) => {
 
 // A /api/courses GET route that will return all courses including the User associated with each course and a 200 HTTP status code.
 app.get('/api/courses', (async (req, res) => {
-  res.status(200).json({ "message": "This GET route should return all courses and User Associateed" });
+  //res.status(200).json({ "message": "This GET route should return all courses and User Associateed" });
+  try {
+    let courses = await Course.findAll();
+    res.status(200).json(courses);
+  } catch (error) {
+    res.status(500).json({ "message": error });
+  }
 }));
 // A /api/courses/:id GET route that will return the corresponding course including the User associated with that course and a 200 HTTP status code.
 app.get('/api/courses/:id', (async (req, res) => {
@@ -79,9 +92,12 @@ app.set('port', process.env.PORT || 5000);
   try {
     await sequelize.authenticate();
     console.log('Connection has been established successfully.');
+    await sequelize.sync();
+    console.log('Synchronizing the models with the database...');
   } catch (error) {
     console.error('Unable to connect to the database:', error);
   }
+
 })();
 
 // start listening on our port
