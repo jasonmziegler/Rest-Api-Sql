@@ -66,8 +66,14 @@ app.get('/api/courses', (async (req, res) => {
 }));
 // A /api/courses/:id GET route that will return the corresponding course including the User associated with that course and a 200 HTTP status code.
 app.get('/api/courses/:id', (async (req, res) => {
-  res.status(200).json({ "message": "This GET route should return the course with the associated id" });
+  try {
+    let course = await Course.findOne({ 'id': req.params.id });
+    res.status(200).json(course);
+  } catch (error) {
+    res.status(500).json({ "message": error });
+  }
 }));
+
 // A /api/courses POST route that will create a new course, set the Location header to the URI for the newly created course, and return a 201 HTTP status code and no content.
 app.post('/api/courses', (async (req, res) => {
   res.status(201).json({ "message": "This POST route should create a course and return no content" });
