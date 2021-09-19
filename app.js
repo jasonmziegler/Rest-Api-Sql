@@ -13,6 +13,9 @@ const enableGlobalErrorLogging = process.env.ENABLE_GLOBAL_ERROR_LOGGING === 'tr
 // create the Express app
 const app = express();
 
+// Setup request body JSON parsing.
+app.use(express.json());
+
 // setup morgan which gives us http request logging
 app.use(morgan('dev'));
 
@@ -36,7 +39,19 @@ app.get('/api/users', (async (req, res) => {
 
 // A /api/users POST route that will create a new user, set the Location header to "/", and return a 201 HTTP status code and no content.
 app.post('/api/users', (async (req, res) => {
-  res.status(201).json({ "message": "This POST route should create a user and return no content" });
+  console.log(req.body);
+  try {
+    await User.create(req.body);
+    res.status(201).json({ "message": "Success! A new User Account was successfully created." });
+  } catch (error) {
+    console.log('Error: ', error.name);
+    if (error.name === 'SequelizeValidationError' || error.name === 'SequelizeUniqueConstraintError') {
+      res.status(400).json({ error });
+    } else {
+      throw error;
+    }
+  }
+  
 }));
 
 // A /api/courses GET route that will return all courses including the User associated with each course and a 200 HTTP status code.
@@ -56,6 +71,7 @@ app.get('/api/courses/:id', (async (req, res) => {
 // A /api/courses POST route that will create a new course, set the Location header to the URI for the newly created course, and return a 201 HTTP status code and no content.
 app.post('/api/courses', (async (req, res) => {
   res.status(201).json({ "message": "This POST route should create a course and return no content" });
+  
 }));
 // A /api/courses/:id PUT route that will update the corresponding course and return a 204 HTTP status code and no content.
 app.put('/api/courses/:id', (async (req, res) => {
