@@ -4,7 +4,7 @@
 const express = require('express');
 const morgan = require('morgan');
 const { User, Course, sequelize } = require('./models');
-
+const { authenticateUser } = require('./middleware/auth-user');
 
 
 // variable to enable global error logging
@@ -27,10 +27,10 @@ app.get('/', (req, res) => {
 });
 
 // A /api/users GET route that will return all properties and values for the currently authenticated User along with a 200 HTTP status code.
-app.get('/api/users', (async (req, res) => {
+app.get('/api/users', authenticateUser, (async (req, res) => {
   try {
-    let users = await User.findAll();
-    res.status(200).json(users);
+    const user = req.currentUser;
+    res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ "message": error });
   }
