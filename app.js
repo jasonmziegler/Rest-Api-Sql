@@ -76,9 +76,15 @@ app.get('/api/courses/:id', (async (req, res) => {
 
 // A /api/courses POST route that will create a new course, set the Location header to the URI for the newly created course, and return a 201 HTTP status code and no content.
 app.post('/api/courses', (async (req, res) => {
-  res.status(201).json({ "message": "This POST route should create a course and return no content" });
-  
+  try {
+    let course = await Course.create(req.body);
+    res.setHeader('Location', `/api/course/${course.id}`);
+    res.status(201).send();
+  } catch (error) {
+    res.status(500).json({ "message": error });
+  } 
 }));
+
 // A /api/courses/:id PUT route that will update the corresponding course and return a 204 HTTP status code and no content.
 app.put('/api/courses/:id', (async (req, res) => {
   res.status(204).json({ "message": "This PUT route should UPDATE a course and return no content" });
