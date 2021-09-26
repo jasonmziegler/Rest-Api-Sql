@@ -75,7 +75,7 @@ app.get('/api/courses/:id', (async (req, res) => {
 }));
 
 // A /api/courses POST route that will create a new course, set the Location header to the URI for the newly created course, and return a 201 HTTP status code and no content.
-app.post('/api/courses', (async (req, res) => {
+app.post('/api/courses', authenticateUser, (async (req, res) => {
   try {
     let course = await Course.create(req.body);
     res.setHeader('Location', `/api/course/${course.id}`);
@@ -86,7 +86,7 @@ app.post('/api/courses', (async (req, res) => {
 }));
 
 // A /api/courses/:id PUT route that will update the corresponding course and return a 204 HTTP status code and no content.
-app.put('/api/courses/:id', (async (req, res) => {
+app.put('/api/courses/:id', authenticateUser, (async (req, res) => {
   try {
     const id  = req.params.id;
     console.log("ID: ", id);
@@ -109,7 +109,7 @@ app.put('/api/courses/:id', (async (req, res) => {
   
 }));
 // A /api/courses/:id DELETE route that will delete the corresponding course and return a 204 HTTP status code and no content.
-app.delete('/api/courses/:id', (async (req, res) => {
+app.delete('/api/courses/:id', authenticateUser, (async (req, res) => {
   try {
     const id = req.params.id;
   const course = await Course.findByPk(id);
