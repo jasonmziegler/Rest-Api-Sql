@@ -110,7 +110,16 @@ app.put('/api/courses/:id', (async (req, res) => {
 }));
 // A /api/courses/:id DELETE route that will delete the corresponding course and return a 204 HTTP status code and no content.
 app.delete('/api/courses/:id', (async (req, res) => {
-  res.status(204).json({ "message": "This DELETE route should DELETE a course and return no content" });
+  try {
+    const id = req.params.id;
+  const course = await Course.findByPk(id);
+  
+  await course.destroy();
+  res.status(204).send();
+  } catch (error) {
+    res.status(500).json({ "message": error });
+  }
+  
 }));
 
 // send 404 if no other route matched
