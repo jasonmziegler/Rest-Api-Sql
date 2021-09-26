@@ -87,7 +87,26 @@ app.post('/api/courses', (async (req, res) => {
 
 // A /api/courses/:id PUT route that will update the corresponding course and return a 204 HTTP status code and no content.
 app.put('/api/courses/:id', (async (req, res) => {
-  res.status(204).json({ "message": "This PUT route should UPDATE a course and return no content" });
+  try {
+    const id  = req.params.id;
+    console.log("ID: ", id);
+    const { title, description, estimatedTime, materialsNeeded, userId } = req.body;
+
+    const course = await Course.findOne({ where: { id: id }});
+    console.log(course);
+    await course.update({
+      title,
+      description,
+      estimatedTime,
+      materialsNeeded,
+      userId
+    });
+
+    res.status(204).send();
+  } catch (error) {
+  res.status(500).json({ "message": error });
+  }                            
+  
 }));
 // A /api/courses/:id DELETE route that will delete the corresponding course and return a 204 HTTP status code and no content.
 app.delete('/api/courses/:id', (async (req, res) => {
