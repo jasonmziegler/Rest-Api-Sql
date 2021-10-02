@@ -42,7 +42,8 @@ app.post('/api/users', (async (req, res) => {
   console.log(req.body);
   try {
     await User.create(req.body);
-    res.status(201).json({ "message": "Success! A new User Account was successfully created." });
+    res.setHeader('Location', `/`);
+    res.status(201).send();
   } catch (error) {
     console.log('Error: ', error.name);
     if (error.name === 'SequelizeValidationError' || error.name === 'SequelizeUniqueConstraintError') {
@@ -81,7 +82,14 @@ app.post('/api/courses', authenticateUser, (async (req, res) => {
     res.setHeader('Location', `/api/course/${course.id}`);
     res.status(201).send();
   } catch (error) {
-    res.status(500).json({ "message": error });
+    //console.log ("Message: ", error.name);
+    // Return 400 if validation error
+    if (error.name === "SequelizeValidationError") {
+      res.status(400).json({ "message": error });
+    } else {
+      res.status(500).json({ "message": error });
+    }
+    
   } 
 }));
 
@@ -104,7 +112,11 @@ app.put('/api/courses/:id', authenticateUser, (async (req, res) => {
 
     res.status(204).send();
   } catch (error) {
-  res.status(500).json({ "message": error });
+    if (error.name === "SequelizeValidationError") {
+      res.status(400).json({ "message": error });
+    } else {
+      res.status(500).json({ "message": error });
+    }
   }                            
   
 }));
